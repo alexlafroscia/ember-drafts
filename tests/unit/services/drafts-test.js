@@ -28,6 +28,30 @@ module('Unit | Service | drafts', function(hooks) {
         'Returned different drafts for different objects'
       );
     });
+
+    test('it works with a function resolver', function(assert) {
+      const first = { id: 1 };
+      const second = { id: 1 };
+      const resolver = object => object.id;
+
+      assert.equal(
+        drafts.for(first, resolver),
+        drafts.for(second, resolver),
+        'Returned the same draft for records that resolve to the same value'
+      );
+    });
+
+    test('it works with an value resolver', function(assert) {
+      const first = { id: 1 };
+      const second = { id: 1 };
+      const resolver = '1';
+
+      assert.equal(
+        drafts.for(first, resolver),
+        drafts.for(second, resolver),
+        'Returned the same draft for records with the same resolver value'
+      );
+    });
   });
 
   module('#isDirty', function() {
@@ -144,6 +168,20 @@ module('Unit | Service | drafts', function(hooks) {
         { id: 3 },
         'The state subscriptionw was not disturbed'
       );
+    });
+
+    test('providing a resolver', function(assert) {
+      const listener = td.function();
+      const resolver = object => object.id;
+
+      const object = { id: 1 };
+      const d = drafts.for(object, resolver);
+
+      drafts.subscribe({ id: 1 }, resolver, listener);
+
+      const newDraft = d.id.set(2);
+
+      assert.verify(listener(newDraft));
     });
   });
 });

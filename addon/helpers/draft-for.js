@@ -4,13 +4,13 @@ import { service } from '@ember-decorators/service';
 export default class DraftFor extends Helper {
   @service drafts;
 
-  compute([object]) {
-    const subscriber = this.drafts.subscribe(object, () => {
+  compute([object], { resolver }) {
+    const subscriber = this.drafts.subscribe(object, resolver, () => {
       subscriber.unsubscribe();
 
       this.recompute();
     });
 
-    return this.drafts.for(object);
+    return this.drafts.for(object, resolver);
   }
 }

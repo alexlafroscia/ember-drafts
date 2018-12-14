@@ -2,75 +2,88 @@ import Service from '@ember/service';
 import { from, valueOf } from '@microstates/ember';
 import { from as makeObservable, Subject } from 'rxjs';
 
-let CURRENT_DRAFT_STORE = new WeakMap();
-let INITIAL_DRAFT_STORE = new WeakMap();
+import MapWithResolver from '../-private/map';
 
-let OBSERVABLE_SUBJECTS = new WeakMap();
-
-function initializeDraft(object) {
-  let nextState;
-
-  const observable = makeObservable(from(object));
-  const subject = new Subject();
-
-  subject.subscribe(newState => {
-    nextState = newState;
-
-    CURRENT_DRAFT_STORE.set(object, nextState);
-  });
-
-  observable.subscribe(subject);
-
-  OBSERVABLE_SUBJECTS.set(object, subject);
-  INITIAL_DRAFT_STORE.set(object, nextState);
-
-  return nextState;
-}
+const CURRENT_DRAFT_STORE_KEY = Symbol();
+const INITIAL_DRAFT_STORE_KEY = Symbol();
+const OBSERVABLE_SUBJECTS_KEY = Symbol();
 
 export default class DraftsService extends Service {
-  for(object) {
+  [CURRENT_DRAFT_STORE_KEY] = new MapWithResolver();
+  [INITIAL_DRAFT_STORE_KEY] = new MapWithResolver();
+  [OBSERVABLE_SUBJECTS_KEY] = new MapWithResolver();
+
+  _initializeDraft(object, resolver) {
+    let nextState;
+
+    const observable = makeObservable(from(object));
+    const subject = new Subject();
+
+    subject.subscribe(newState => {
+      nextState = newState;
+
+      this[CURRENT_DRAFT_STORE_KEY].set(object, resolver, nextState);
+    });
+
+    observable.subscribe(subject);
+
+    this[OBSERVABLE_SUBJECTS_KEY].set(object, resolver, subject);
+    this[INITIAL_DRAFT_STORE_KEY].set(object, resolver, nextState);
+
+    return nextState;
+  }
+
+  for(object, resolver) {
     let draft;
 
-    if (CURRENT_DRAFT_STORE.has(object)) {
-      draft = CURRENT_DRAFT_STORE.get(object);
+    if (this[CURRENT_DRAFT_STORE_KEY].has(object, resolver)) {
+      draft = this[CURRENT_DRAFT_STORE_KEY].get(object, resolver);
     } else {
-      draft = initializeDraft(object);
+      draft = this._initializeDraft(object, resolver);
     }
 
     return draft;
   }
 
-  isDirty(object) {
-    const draft = CURRENT_DRAFT_STORE.get(object);
+  isDirty(object, resolver) {
+    const draft = this[CURRENT_DRAFT_STORE_KEY].get(object, resolver);
 
     if (!draft) {
       throw new Error('No draft');
     }
 
-    return INITIAL_DRAFT_STORE.get(object) !== draft;
+    return this[INITIAL_DRAFT_STORE_KEY].get(object, resolver) !== draft;
   }
 
-  reset(object) {
-    const state = INITIAL_DRAFT_STORE.get(object);
+  reset(object, resolver) {
+    const state = this[INITIAL_DRAFT_STORE_KEY].get(object, resolver);
 
-    OBSERVABLE_SUBJECTS.get(object).next(state);
+    this[OBSERVABLE_SUBJECTS_KEY].get(object, resolver).next(state);
 
     return state;
   }
 
-  commit(object) {
-    const state = CURRENT_DRAFT_STORE.get(object);
+  commit(object, resolver) {
+    const state = this[CURRENT_DRAFT_STORE_KEY].get(object, resolver);
 
-    INITIAL_DRAFT_STORE.set(object, state);
+    this[INITIAL_DRAFT_STORE_KEY].set(object, resolver, state);
 
     return valueOf(state);
   }
 
-  subscribe(object, callback) {
-    if (!OBSERVABLE_SUBJECTS.has(object)) {
-      this.for(object);
+  subscribe(object, resolver, callback) {
+    // Handle resolver being left out; optional second argument
+    if (typeof callback === 'undefined') {
+      callback = resolver;
+      resolver = undefined;
     }
 
-    return OBSERVABLE_SUBJECTS.get(object).subscribe(callback);
+    if (!this[OBSERVABLE_SUBJECTS_KEY].has(object, resolver)) {
+      this.for(object, resolver);
+    }
+
+    return this[OBSERVABLE_SUBJECTS_KEY].get(object, resolver).subscribe(
+      callback
+    );
   }
 }

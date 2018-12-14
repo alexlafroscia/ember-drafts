@@ -44,7 +44,7 @@ module('Integration | Helper | draft-for', function(hooks) {
     assert.dom('#value').hasText('2');
   });
 
-  test('it reacts to changed in the draft service', async function(assert) {
+  test('it reacts to a change in the draft service', async function(assert) {
     this.object = { id: 1 };
 
     await render(hbs`
@@ -56,6 +56,24 @@ module('Integration | Helper | draft-for', function(hooks) {
     `);
 
     this.drafts.for(this.object).id.set(2);
+    await settled();
+
+    assert.dom('#value').hasText('2');
+  });
+
+  test('it can provide a resolver', async function(assert) {
+    this.object = { id: 1 };
+    this.resolver = object => object.id;
+
+    await render(hbs`
+      {{#let (draft-for object resolver=resolver) as |draft|}}
+        <div id="value">
+          {{get (value-of draft) "id"}}
+        </div>
+      {{/let}}
+    `);
+
+    this.drafts.for(this.object, this.resolver).id.set(2);
     await settled();
 
     assert.dom('#value').hasText('2');
