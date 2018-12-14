@@ -7,34 +7,34 @@ let INITIAL_DRAFT_STORE = new WeakMap();
 
 let OBSERVABLE_SUBJECTS = new WeakMap();
 
+function initializeDraft(object) {
+  let nextState;
+
+  const observable = makeObservable(from(object));
+  const subject = new Subject();
+
+  subject.subscribe(newState => {
+    nextState = newState;
+
+    CURRENT_DRAFT_STORE.set(object, nextState);
+  });
+
+  observable.subscribe(subject);
+
+  OBSERVABLE_SUBJECTS.set(object, subject);
+  INITIAL_DRAFT_STORE.set(object, nextState);
+
+  return nextState;
+}
+
 export default class DraftsService extends Service {
-  _initializeDraft(object) {
-    let nextState;
-
-    const observable = makeObservable(from(object));
-    const subject = new Subject();
-
-    subject.subscribe(newState => {
-      nextState = newState;
-
-      CURRENT_DRAFT_STORE.set(object, nextState);
-    });
-
-    observable.subscribe(subject);
-
-    OBSERVABLE_SUBJECTS.set(object, subject);
-    INITIAL_DRAFT_STORE.set(object, nextState);
-
-    return nextState;
-  }
-
   for(object) {
     let draft;
 
     if (CURRENT_DRAFT_STORE.has(object)) {
       draft = CURRENT_DRAFT_STORE.get(object);
     } else {
-      draft = this._initializeDraft(object);
+      draft = initializeDraft(object);
     }
 
     return draft;
