@@ -1,3 +1,7 @@
+const MAP = Symbol();
+const WEAK_MAP = Symbol();
+const RETRIEVE_MAP = Symbol();
+
 function getIdentity(object, resolver) {
   let identity;
 
@@ -31,30 +35,28 @@ function isPrimitive(value) {
  * not expire.
  */
 export default class MapWithResolver {
-  constructor() {
-    this._weakMap = new WeakMap();
-    this._map = new Map();
-  }
+  [MAP] = new Map();
+  [WEAK_MAP] = new WeakMap();
 
-  _retrieveMap(identity) {
-    return isPrimitive(identity) ? this._map : this._weakMap;
+  [RETRIEVE_MAP](identity) {
+    return isPrimitive(identity) ? this[MAP] : this[WEAK_MAP];
   }
 
   get(object, resolver) {
     const identity = getIdentity(object, resolver);
 
-    return this._retrieveMap(identity).get(identity);
+    return this[RETRIEVE_MAP](identity).get(identity);
   }
 
   has(object, resolver) {
     const identity = getIdentity(object, resolver);
 
-    return this._retrieveMap(identity).has(identity);
+    return this[RETRIEVE_MAP](identity).has(identity);
   }
 
   set(object, resolver, newValue) {
     const identity = getIdentity(object, resolver);
 
-    return this._retrieveMap(identity).set(identity, newValue);
+    return this[RETRIEVE_MAP](identity).set(identity, newValue);
   }
 }
