@@ -1,0 +1,8 @@
+.results {
+  border: 1px solid red;
+  padding: 12px;
+}
+
+.label {
+  font-weight: bold;
+}

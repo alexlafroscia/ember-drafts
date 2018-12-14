@@ -1,0 +1,8 @@
+.root {
+  border: 1px solid black;
+  padding: 16px;
+}
+
+.label {
+  font-weight: bold;
+}
