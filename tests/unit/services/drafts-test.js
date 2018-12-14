@@ -3,101 +3,109 @@ import { setupTest } from 'ember-qunit';
 import { valueOf } from '@microstates/ember';
 import td from 'testdouble';
 
-let draft;
+let drafts;
 
 module('Unit | Service | drafts', function(hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function() {
-    draft = this.owner.lookup('service:drafts');
+    drafts = this.owner.lookup('service:drafts');
   });
 
-  test('it returns the same draft for an object', function(assert) {
-    const first = { id: 1 };
-    const second = { id: 2 };
+  module('#for', function() {
+    test('it returns the same draft for an object', function(assert) {
+      const first = { id: 1 };
+      const second = { id: 2 };
 
-    assert.equal(
-      draft.for(first),
-      draft.for(first),
-      'Returned the same draft for the same object'
-    );
-    assert.notEqual(
-      draft.for(first),
-      draft.for(second),
-      'Returned different drafts for different objects'
-    );
+      assert.equal(
+        drafts.for(first),
+        drafts.for(first),
+        'Returned the same draft for the same object'
+      );
+      assert.notEqual(
+        drafts.for(first),
+        drafts.for(second),
+        'Returned different drafts for different objects'
+      );
+    });
   });
 
-  test('telling if an object has changed', function(assert) {
-    const object = { id: 1 };
-    const d = draft.for(object);
+  module('#isDirty', function() {
+    test('telling if an object has changed', function(assert) {
+      const object = { id: 1 };
+      const d = drafts.for(object);
 
-    d.id.set(2);
+      d.id.set(2);
 
-    assert.ok(
-      draft.isDirty(object),
-      'The object is recognized as being updated'
-    );
+      assert.ok(
+        drafts.isDirty(object),
+        'The object is recognized as being updated'
+      );
+    });
   });
 
-  test("resetting an object's draft", function(assert) {
-    const listener = td.function();
-    const object = { id: 1 };
-    const d = draft.for(object);
+  module('#reset', function() {
+    test("resetting an object's draft", function(assert) {
+      const listener = td.function();
+      const object = { id: 1 };
+      const d = drafts.for(object);
 
-    d.id.set(2);
+      d.id.set(2);
 
-    assert.deepEqual(
-      valueOf(draft.for(object)),
-      { id: 2 },
-      'The draft state has been updated'
-    );
+      assert.deepEqual(
+        valueOf(drafts.for(object)),
+        { id: 2 },
+        'The draft state has been updated'
+      );
 
-    draft.subscribe(object, listener);
-    const resetState = draft.reset(object);
+      drafts.subscribe(object, listener);
+      const resetState = drafts.reset(object);
 
-    assert.deepEqual(
-      valueOf(draft.for(object)),
-      { id: 1 },
-      'The draft state has been reset'
-    );
+      assert.deepEqual(
+        valueOf(drafts.for(object)),
+        { id: 1 },
+        'The draft state has been reset'
+      );
 
-    assert.verify(listener(resetState));
+      assert.verify(listener(resetState));
+    });
   });
 
-  test('committing the changes to an object', function(assert) {
-    const object = { id: 1 };
-    const d = draft.for(object);
+  module('#commit', function() {
+    test('committing the changes to an object', function(assert) {
+      const object = { id: 1 };
+      const d = drafts.for(object);
 
-    d.id.set(2);
+      d.id.set(2);
 
-    assert.deepEqual(object, { id: 1 }, 'The original object is not changed');
+      assert.deepEqual(object, { id: 1 }, 'The original object is not changed');
 
-    const updated = draft.commit(object);
+      const updated = drafts.commit(object);
 
-    assert.deepEqual(updated, { id: 2 }, 'The updated object is returned');
+      assert.deepEqual(updated, { id: 2 }, 'The updated object is returned');
 
-    draft.reset(object);
+      drafts.reset(object);
 
-    assert.deepEqual(
-      valueOf(draft.for(object)),
-      { id: 2 },
-      'The initial state was updated'
-    );
+      assert.deepEqual(
+        valueOf(drafts.for(object)),
+        { id: 2 },
+        'The initial state was updated'
+      );
+    });
   });
 
-  module('subscribing to changes', function() {
+  module('#subscribe', function() {
     test('subscribing to updated to a draft', function(assert) {
       const first = td.function();
       const second = td.function();
       const third = td.function();
 
       const object = { id: 1 };
-      const d = draft.for(object);
+      const d = drafts.for(object);
 
-      draft.subscribe(object, first);
-      draft.subscribe(object, second);
-      draft.subscribe(object, third);
+      drafts.subscribe(object, first);
+      drafts.subscribe(object, second);
+      drafts.subscribe(object, third);
 
       const firstDraft = d.id.set(2);
 
@@ -117,9 +125,9 @@ module('Unit | Service | drafts', function(hooks) {
       const listener = td.function();
 
       const object = { id: 1 };
-      const d = draft.for(object);
+      const d = drafts.for(object);
 
-      const subscriber = draft.subscribe(object, listener);
+      const subscriber = drafts.subscribe(object, listener);
 
       const secondDraft = d.id.set(2);
       assert.verify(listener(secondDraft), { times: 1 });
@@ -132,7 +140,7 @@ module('Unit | Service | drafts', function(hooks) {
       assert.equal(callCount, 1, 'Only called one time');
 
       assert.deepEqual(
-        valueOf(draft.for(object)),
+        valueOf(drafts.for(object)),
         { id: 3 },
         'The state subscriptionw was not disturbed'
       );
