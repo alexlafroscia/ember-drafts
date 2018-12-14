@@ -1,11 +1,13 @@
-<input
-  value={{draft.id.state}}
-  oninput={{action draft.id.set value="target.value"}}
->
-
 <span>
   <label local-class="label">
     Draft Value:
   </label>
-  {{get (value-of draft) "id"}}
+  {{get (value-of draft) "value"}}
 </span>
+
+<br>
+
+<input
+  value={{draft.value.state}}
+  oninput={{action draft.value.set value="target.value"}}
+>

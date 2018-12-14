@@ -13,11 +13,11 @@
 <div local-class="results">
   <span>
     <label local-class="label">Committed Value:</label>
-    {{object.id}}
+    {{stringify object}}
   </span>
 
-  <button {{action this.commit}}>
-    Commit!
+  <button {{action this.save}}>
+    Save!
   </button>
 
   <button {{action this.reset}}>

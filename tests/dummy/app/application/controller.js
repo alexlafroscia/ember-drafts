@@ -4,12 +4,12 @@ import { service } from '@ember-decorators/service';
 export default class ApplicationController extends Controller {
   @service drafts;
 
-  object = { id: 1 };
+  object = { value: 1, lastUpdated: new Date() };
 
-  commit() {
+  save() {
     const newObject = this.drafts.commit(this.object);
 
-    this.set('object', newObject);
+    this.set('object', { ...newObject, lastUpdated: new Date() });
   }
 
   reset() {
