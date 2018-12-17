@@ -848,14 +848,14 @@
   dependencies:
     "@glimmer/util" "^0.35.10"
 
-"@microstates/ember@^0.12.1":
-  version "0.12.1"
-  resolved "https://registry.yarnpkg.com/@microstates/ember/-/ember-0.12.1.tgz#8e38e8956f524665aa6189051710812b7487e97e"
-  integrity sha512-72g8xkYgzVA9U6JEUuCXqqRHwvmHxsyZJL9UlJ0BO3jj1JvQv6YZgotimrElbzdvS4gRVrxSUEpNxRfLb8UcXA==
+"@microstates/ember@^0.12.2":
+  version "0.12.2"
+  resolved "https://registry.yarnpkg.com/@microstates/ember/-/ember-0.12.2.tgz#14a516471f761cf6655bfd3d76044d13d34512c3"
+  integrity sha512-gdaHlom1W4F4ijvCJX/4erw71cCa8lS/RxoO9AFyD0hvdFy7pZ/qdarhlTp2XSAcD1RtF9TvXR+J2M6KiR3eJg==
   dependencies:
-    ember-auto-import "1.2.19"
+    ember-auto-import "^1.2.19"
     ember-cli-babel "^7.2.0"
-    microstates "0.12.3"
+    microstates "^0.12.4"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -3570,7 +3570,7 @@ ember-assign-polyfill@~2.4.0:
     ember-cli-babel "^6.6.0"
     ember-cli-version-checker "^2.0.0"
 
-ember-auto-import@1.2.19, ember-auto-import@^1.2.19:
+ember-auto-import@^1.2.19:
   version "1.2.19"
   resolved "https://registry.yarnpkg.com/ember-auto-import/-/ember-auto-import-1.2.19.tgz#69a2da0d2c16ab88989c51381c415214e85d1af3"
   integrity sha512-OT7I3zrIAv/rbbYJFZNqfJi/2HpAscjOWOaBPPUj8VkUnY26HlLO6mSzDIkoUOaTAEWiy2GzjenHGj6b9rivxw==
@@ -6749,10 +6749,10 @@ micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4, micromatch@^3.1.8:
     snapdragon "^0.8.1"
     to-regex "^3.0.2"
 
-microstates@0.12.3:
-  version "0.12.3"
-  resolved "https://registry.yarnpkg.com/microstates/-/microstates-0.12.3.tgz#176def447c7625edf9b43c3cfc4bbcccd0e8be90"
-  integrity sha512-Rp69LbIrd1e+UjxqhUEt2MqTnTwfYavEwFnECVdJ2wNeEu/wZyLwvct9HJwsFRtvHB+80YCoqvTxdAYWobNwMQ==
+microstates@^0.12.4:
+  version "0.12.4"
+  resolved "https://registry.yarnpkg.com/microstates/-/microstates-0.12.4.tgz#c9dd7786670df60b4f62c11c59084004bc18a341"
+  integrity sha512-qLWSfYlL0PD8NtAIphI37tqF5o3DSzY57BHInXJtWL4/W/ZnWNkUlTp44hrXBVzuKC2rWjygbvsjMA2fIn9Oyw==
   dependencies:
     funcadelic "^0.5.0"
     symbol-observable "^1.2.0"

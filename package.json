@@ -23,7 +23,7 @@
   "dependencies": {
     "@ember-decorators/babel-transforms": "^3.1.0",
     "@ember-decorators/service": "^3.1.5",
-    "@microstates/ember": "^0.12.1",
+    "@microstates/ember": "^0.12.2",
     "ember-auto-import": "^1.2.19",
     "ember-cli-babel": "^7.1.2",
     "rxjs": "^6.3.3"
