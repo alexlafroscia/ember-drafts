@@ -1,4 +1,4 @@
-import BaseDraftHelper from './-base-draft-helper';
+import BaseDraftHelper from '../-private/base-draft-helper';
 
 export default class DraftFor extends BaseDraftHelper {
   compute([object], { resolver }) {
