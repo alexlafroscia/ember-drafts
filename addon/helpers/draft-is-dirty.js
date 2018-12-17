@@ -4,6 +4,6 @@ export default class DraftFor extends BaseDraftHelper {
   compute([object], { resolver }) {
     super.compute(...arguments);
 
-    return this.drafts.for(object, resolver);
+    return this.drafts.isDirty(object, resolver);
   }
 }

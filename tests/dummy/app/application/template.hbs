@@ -11,10 +11,26 @@
 <br>
 
 <div local-class="results">
-  <span>
-    <label local-class="label">Committed Value:</label>
-    {{stringify object}}
-  </span>
+  <table>
+    <tr>
+      <td local-class="label">
+        Committed Value
+      </td>
+      <td>
+        {{stringify object}}
+      </td>
+    </tr>
+    <tr>
+      <td local-class="label">
+        Draft is Dirty
+      </td>
+      <td>
+        {{draft-is-dirty object}}
+      </td>
+    </tr>
+  </table>
+
+  <br>
 
   <button {{action this.save}}>
     Save!
