@@ -1,42 +1,69 @@
-{{object-editor
-  draft=(draft-for object)
-}}
+<div local-class="wrapper">
+  <div local-class="editor">
+    {{object-editor
+      draft=(draft-for object)
+    }}
 
-<br>
+    <br>
 
-{{object-editor
-  draft=(draft-for object)
-}}
+    {{object-editor
+      draft=(draft-for object)
+    }}
 
-<br>
+    <br>
 
-<div local-class="results">
-  <table>
-    <tr>
-      <td local-class="label">
-        Committed Value
-      </td>
-      <td>
-        {{stringify object}}
-      </td>
-    </tr>
-    <tr>
-      <td local-class="label">
-        Draft is Dirty
-      </td>
-      <td>
-        {{draft-is-dirty object}}
-      </td>
-    </tr>
-  </table>
+    <div local-class="results">
+      <table>
+        <tr>
+          <td local-class="label">
+            Committed Value
+          </td>
+          <td>
+            {{stringify object}}
+          </td>
+        </tr>
+        <tr>
+          <td local-class="label">
+            Draft is Dirty
+          </td>
+          <td>
+            {{draft-is-dirty object}}
+          </td>
+        </tr>
+      </table>
 
-  <br>
+      <br>
 
-  <button {{action this.save}}>
-    Save!
-  </button>
+      <button {{action this.save}}>
+        Save!
+      </button>
 
-  <button {{action this.reset}}>
-    Reset!
-  </button>
+      <button {{action this.reset}}>
+        Reset!
+      </button>
+    </div>
+  </div>
+  <div local-class="history">
+    <h2>History</h2>
+
+    <table>
+      {{#each history as |item|}}
+        <tr>
+          <td>{{time-from (value-of item.lastUpdated)}}</td>
+          <td>{{value-of item.value}}</td>
+          <td>
+            <button {{action this.revert item}}>
+              Revert to State
+            </button>
+          </td>
+        </tr>        
+      {{else}}
+        <tr>
+          <td colspan="100%">
+            None
+          </td>
+        </tr>
+      {{/each}}
+    </table>
+  </div>
 </div>

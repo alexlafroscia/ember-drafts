@@ -1,3 +1,20 @@
+.wrapper {
+  display: flex;
+  justify-items: stretch;
+  min-height: 100vh;
+}
+
+.editor {
+  flex-grow: 1;
+  margin: 12px;
+}
+
+.history {
+  background: lightgrey;
+  padding: 12px;
+  min-width: 300px;
+}
+
 .results {
   border: 1px solid red;
   padding: 12px;
