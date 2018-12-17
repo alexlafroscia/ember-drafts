@@ -3,23 +3,28 @@ import { service } from '@ember-decorators/service';
 import { valueOf } from '@microstates/ember';
 
 export default class ApplicationController extends Controller {
-  @service drafts;
+  @service('drafts') draft;
 
   history = [];
   object = { value: 1, lastUpdated: new Date() };
 
   save() {
+    const currentState = this.draft
+      .for(this.object)
+      .lastUpdated.set(new Date());
+
+    // TODO: Why did the `value` disappear??
+
     // Add to the history
-    const currentState = this.drafts.for(this.object);
     this.set('history', [...this.history, currentState]);
 
-    const newObject = this.drafts.commit(this.object);
+    const newObject = this.draft.commit(this.object);
 
-    this.set('object', { ...newObject, lastUpdated: new Date() });
+    this.set('object', newObject);
   }
 
   reset() {
-    this.drafts.reset(this.object);
+    this.draft.reset(this.object);
   }
 
   revert(previousState) {
